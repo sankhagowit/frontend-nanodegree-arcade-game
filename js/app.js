@@ -1,12 +1,12 @@
 // Enemies our player must avoid
-var Enemy = function(initRow) {
+var Enemy = function(initRow, initCol) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     // starting x position. All bugs begin in first left column
     // which I believe is px 101 from the render function in engine.js x and y
-    // values used to draw the game tiles.
-    this.x = 101;
+    // values used to draw the game tiles. initCol for bugs should be 1.
+    this.x = 101 * initCol;
     // Initial y position, need to pass Enemy class a row to begin on. bugs
     // can only start on the stone which are rows 2, 3, and 4 (if top row is 1)
     this.y = initRow * 83;
@@ -33,10 +33,14 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(initRow, initCol) {
-  // delegate Enemy functionality to player
-  // change player starting x and y to initial location on the board
-
+  // delegate Enemy properties to player
+  Enemy.call(this,initRow,initCol);
 }
+// Copy Enemy class methods to Player class
+Player.prototype = Object.create(Enemy.prototype);
+// reset Player prototype to player class from Enemy class
+Player.prototype.constructor = Player;
+
 Player.prototype.handleInput = function(keys){
   // need to update player position with
   // this function. Could abstract it it to
