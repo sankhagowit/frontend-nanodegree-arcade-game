@@ -1,5 +1,5 @@
 /*  Enemies our player must avoid. Class takes 3 parameters. The initial column
-*   from 0 to 4, the initial row from 0 to 5, and the speed at which the Enemy
+*   from 1 to 5, the initial row from 1 to 6, and the speed at which the Enemy
 *   automatically moves.
 */
 var Enemy = function(initCol, initRow, speed) {
@@ -8,22 +8,16 @@ var Enemy = function(initCol, initRow, speed) {
     this.sprite = 'images/enemy-bug.png';
     this.col = initCol;
     this.row = initRow;
-    // starting x coordinate from column number. All bugs begin in column -1
-    // all columns are 101 px wide, thus to get canvas x position multiply column
-    // by 101 px
-    this.x = this.col * 101;
-    // Initial y position or the initial row to start on with row 0 being the
-    // first row rendered. Sprites are 101px wide, thus we take the row Number
-    // Enemies can only start on the stone which are rows 1, 2, and 3 (top row 0)
-    // It seems the px position to be aligned on a certain row changes depending
-    // on what row the sprite is on, thus I will use a switch statement
+    // see comments below on the functions transforming row & column number
+    // to the x and y pixel coordinate
+    this.colToXcoordinate();
     this.rowToYcoordinate();
-    // Number of current enemies on the game board, will also be the index
+    // Number of current enemies on the game board, will also be the index in allEnemies
     // number of this instantiated class thus the .numEnemies can be used
     // to remove this bug from the allEnemies array when it is off of the board
     this.numEnemies = allEnemies.length;
     // Property for the speed at which the sprite automatically moves
-    // across the screen from left to right ... maybe delete this
+    // across the screen from left to right. Set to 0 for players
     this.speed = speed;
 };
 
@@ -33,8 +27,10 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    // Going to try writing a function that just moves a bug across the
-    // screen at a constant pace. For some reason the player disappears?
+
+    // Move sprite across the screen from right to left according to the speed
+    // parameter. Once the sprite is off of the screen to the right, reset
+    // sprites position to off the screen to the left.
     if(this.x <= 505){
       this.x = this.x + (this.speed * dt);
     } else {
@@ -43,37 +39,53 @@ Enemy.prototype.update = function(dt) {
 };
 
 /*  Code easier to read and interpret when the position of the sprites is in
-*   the number of rows and columns, thus I have abstracted in a function the
-*   transform from the row number to the y coordinate. I used a switch statement
-*   because I noticed that the positioning of the sprites using a constant number
-*   multiplied by a row number to be unsatisfactory visually in the rows towards
-*   the bottom of the table. I think dealing with discrete rows will also make
-*   the collision detection easier (if player.row === enemy.row) then check x pos
+    the number of rows and columns, thus I have abstracted in a function the
+    transform from the row number to the y coordinate. I used a switch statement
+    because I noticed that the positioning of the sprites using a constant number
+    multiplied by a row number to be unsatisfactory visually in the rows towards
+    the bottom of the table.. Something to do with the .png of the game tiles and
+    the .png of the sprites.. so I've opted at this moment to write the switch
+    statement instead of figure out how that is working and create a function
+    to position the sprites.
+
+    The switch statement takes the this.row (from 1-6, instead of 0-5) and assigns
+    the y-coordinate which I think makes the game look good.
+
+    I think dealing with discrete rows will also make the collision detection
+    easier (if player.row === enemy.row) then check x pos
 */
 Enemy.prototype.rowToYcoordinate = function() {
   switch (this.row) {
-    case 0:
+    case 1:
       this.y = -20;
       break;
-    case 1:
+    case 2:
       this.y = 60;
       break;
-    case 2:
+    case 3:
       this.y = 146;
       break;
-    case 3:
+    case 4:
       this.y = 228;
       break;
-    case 4:
+    case 5:
       this.y = 312;
       break;
-    case 5:
+    case 6:
       this.y = 390;
       break;
     default:
       this.y = 146; // default to the third row
   }
-}
+};
+
+// function to turn column number (in 1 to 6) to the appropriate x coordinate
+// All bugs begin in column 0 (off to the left of the game board)
+// all columns are 101 px wide, thus to get canvas x position multiply column
+// by 101 px
+Enemy.prototype.colToXcoordinate = function() {
+  this.x = 101 * (this.col - 1);
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -107,7 +119,15 @@ Player.prototype.update = function() {
   // } else {
   //   //change the x and y in accordance with the pressed keys
   // }
-}
+  allEnemies.forEach(function(enemy) {
+      if(enemy.row === player.row){
+        if(enemy.x > (player.x - 101) && enemy.x <= (player.x+101)){
+          player.row = playerRowStart;
+          player.col = playerColStart;
+        }
+      }
+  });
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -117,12 +137,14 @@ Player.prototype.update = function() {
 // make a helper function outside of enemy class to push the created enemy
 // into the allEnemies array.
 var allEnemies = [];
-allEnemies.push(new Enemy(-1,2,100));
+allEnemies.push(new Enemy(0,3,100));
 
-var playerColStart = 2;
-var playerRowStart = 5;
-
-var player = new Player(2,5,0);
+// create variables for player starting point. Will be used in collisions and
+// to reset game when the game is won.
+var playerColStart = 3;
+var playerRowStart = 6;
+// instantiate player objects
+var player = new Player(playerColStart,playerRowStart,0);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -137,6 +159,13 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//need to make a function called checkCollisions for the player
-//so the player class should be very similar to the bug class , but have
-// the checkCollisions
+function checkCollisions() {
+  allEnemies.forEach(function(enemy) {
+      if(enemy.row === player.row){
+        if(player.x > enemy.x+101 || player.x < enemy.x -101){
+          player.row = playerRowStart;
+          player.col = playerColStart;
+        }
+      }
+  });
+}
