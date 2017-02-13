@@ -1,10 +1,25 @@
+#Classic Arcade Game Clone README
 frontend-nanodegree-arcade-game
 ===============================
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+##Installation
+Download / Clone github repo - required files are
+  * index.html
+  * the folders css, images, js and all of their contents
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+Place all downloaded files in the same directory. Open index.html in a web
+browser (chrome recommended).
 
-# Potential Resources During Development (DELETE ME LATER)
-[kibo][https://github.com/marquete/kibo]
-[HTML5 Game Dev][http://html5gamedevelopment.com/2013-12-developing-html5-games-1hr-video-presentation/#]
+##Game Play
+Use your keyboards up, down, left and right arrow keys to move the player around
+the game board. The objective of the game is to reach the water at the top
+of the board without contacting any of the enemy bugs. If you come in contact with
+and enemy bug your player will be reset to the starting position. If you
+are able to make it all the way to the water you win! Your player will be reset
+to the starting position at which point try to win again!
+
+##Known Bugs
+As enemies cross the screen they are prevented from coming back onto
+the screen to make the game more enjoyable however they are simply held to
+the side of the game board not deleted from memory.
+Make sure to exit the game when you are finished.
