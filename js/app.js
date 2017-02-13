@@ -112,13 +112,17 @@ Player.prototype.handleInput = function(keys){
 };
 
 Player.prototype.update = function() {
-  //will this reset the player update method?
-  // if(player.y < playerRowpx){
-  //   player.x = playerColStart;
-  //   player.y = playerRowStart;
-  // } else {
-  //   //change the x and y in accordance with the pressed keys
-  // }
+
+  if(this.row === 1){
+    // player has reached the goal of the game, reset location
+    this.row = playerRowStart;
+    this.col = playerColStart;
+  }
+
+  // Collision detection. The the enemy is on the same row as the player
+  // then check if the x location of the bug is within the collision zone
+  // which explicitly is the width of the bug (101px) less than player.x and
+  // width of the bug greater than player.x location.
   allEnemies.forEach(function(enemy) {
       if(enemy.row === player.row){
         if(enemy.x > (player.x - 101) && enemy.x <= (player.x+101)){
