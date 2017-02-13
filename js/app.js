@@ -8,7 +8,7 @@ var Enemy = function(initCol, initRow, speed) {
     this.sprite = 'images/enemy-bug.png';
     this.col = initCol;
     this.row = initRow;
-    // starting x position from the column. All bugs begin in first left column
+    // starting x coordinate from column number. All bugs begin in column -1
     // all columns are 101 px wide, thus to get canvas x position multiply column
     // by 101 px
     this.x = this.col * 101;
@@ -17,7 +17,6 @@ var Enemy = function(initCol, initRow, speed) {
     // Enemies can only start on the stone which are rows 1, 2, and 3 (top row 0)
     // It seems the px position to be aligned on a certain row changes depending
     // on what row the sprite is on, thus I will use a switch statement
-    //this.y = initRow;
     this.rowToYcoordinate();
     // Number of current enemies on the game board, will also be the index
     // number of this instantiated class thus the .numEnemies can be used
@@ -43,6 +42,13 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
+/*  Code easier to read and interpret when the position of the sprites is in
+*   the number of rows and columns, thus I have abstracted in a function the
+*   transform from the row number to the y coordinate. I used a switch statement
+*   because I noticed that the positioning of the sprites using a constant number
+*   multiplied by a row number to be unsatisfactory visually in the rows towards
+*   the bottom of the table.
+*/
 Enemy.prototype.rowToYcoordinate = function() {
   switch (this.row) {
     case 0:
