@@ -2,6 +2,9 @@
 *   from 1 to 5, the initial row from 1 to 6, and the speed at which the Enemy
 *   automatically moves.
 */
+var numCols = 5;
+var numRows = 6;
+
 var Enemy = function(initCol, initRow, speed) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -89,7 +92,6 @@ Enemy.prototype.colToXcoordinate = function() {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    this.rowToYcoordinate();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
@@ -107,11 +109,35 @@ Player.prototype = Object.create(Enemy.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.handleInput = function(keys){
-  // need to update player position with
-  // this function. Could abstract it it to
+  switch(keys){
+    case 'up':
+      // decrease player.row by 1 - update function will handle getting row = 1
+      player.row--;
+      break;
+    case 'down':
+      if(player.row < numRows){
+        player.row++;
+      }
+      break;
+    case 'left':
+      if(player.col > 1){
+        player.col--;
+      }
+      break;
+    case 'right':
+      if(player.col < numCols){
+        player.col++;
+      }
+      break;
+    default:
+      //Do nothing
+  }
+
 };
 
 Player.prototype.update = function() {
+  this.rowToYcoordinate();
+  this.colToXcoordinate();
 
   if(this.row === 1){
     // player has reached the goal of the game, reset location
@@ -132,10 +158,6 @@ Player.prototype.update = function() {
       }
   });
 };
-
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 
 // Create array allEnemies which will hold each instantiated Enemy. Need to
 // make a helper function outside of enemy class to push the created enemy
@@ -162,14 +184,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-function checkCollisions() {
-  allEnemies.forEach(function(enemy) {
-      if(enemy.row === player.row){
-        if(player.x > enemy.x+101 || player.x < enemy.x -101){
-          player.row = playerRowStart;
-          player.col = playerColStart;
-        }
-      }
-  });
-}
