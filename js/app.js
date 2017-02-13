@@ -47,7 +47,8 @@ Enemy.prototype.update = function(dt) {
 *   transform from the row number to the y coordinate. I used a switch statement
 *   because I noticed that the positioning of the sprites using a constant number
 *   multiplied by a row number to be unsatisfactory visually in the rows towards
-*   the bottom of the table.
+*   the bottom of the table. I think dealing with discrete rows will also make
+*   the collision detection easier (if player.row === enemy.row) then check x pos
 */
 Enemy.prototype.rowToYcoordinate = function() {
   switch (this.row) {
