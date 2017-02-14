@@ -121,21 +121,21 @@ Player.prototype.handleInput = function(keys) {
     switch (keys) {
         case 'up':
             // decrease player.row by 1 - update function will handle getting row = 1
-            player.row--;
+            this.row--;
             break;
         case 'down':
-            if (player.row < numRows) {
-                player.row++;
+            if (this.row < numRows) {
+                this.row++;
             }
             break;
         case 'left':
-            if (player.col > 1) {
-                player.col--;
+            if (this.col > 1) {
+                this.col--;
             }
             break;
         case 'right':
-            if (player.col < numCols) {
-                player.col++;
+            if (this.col < numCols) {
+                this.col++;
             }
             break;
         default:
